@@ -17,7 +17,7 @@ setup(
     ],
     package_data = {
         '': ['README.rst', 'CHANGES.txt'],
-        'isotoma.recipe.varnish': ['template.cfg']
+        'isotoma.recipe.squid': ['squid.conf']
     },
     keywords = "squid proxy cache buildout",
     author = "John Carr",
