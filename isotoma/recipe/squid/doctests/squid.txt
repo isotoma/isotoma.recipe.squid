@@ -1,0 +1,117 @@
+
+Simple creation of an squid config
+===================================
+
+Lets create a minimal `buildout.cfg` file::
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = squid
+  ... offline = true
+  ...
+  ... [squid]
+  ... recipe = isotoma.recipe.squid
+  ... port = 3128
+  ... ''')
+
+Now we can run buildout::
+
+  >>> print system(join('bin', 'buildout')),
+  Installing squid.
+  YYYY/MM/DD HH:MM:SS| Creating Swap Directories
+
+The config was indeed created::
+
+  >>> cat('parts/squid/squid.conf')
+  # Normal stuff we control from recipe
+  http_port 3128
+  cache_dir ufs /sample-buildout/var/squid 5000 16 256
+  access_log /sample-buildout/var/log/squid/access.log squid
+  cache_log /sample-buildout/var/log/squid/cache.log
+  cache_store_log /sample-buildout/var/log/squid/store.log
+  coredump_dir /sample-buildout/parts/squid/coredump
+  pid_filename /sample-buildout/var/squid.pid
+  <BLANKLINE>
+  acl all src all
+  acl manager proto cache_object
+  acl localhost src 127.0.0.1/32
+  acl to_localhost dst 127.0.0.0/8
+  <BLANKLINE>
+  acl localnet src 127.0.0.1/32
+  acl localnet src 10.0.0.0/8
+  acl localnet src 172.16.0.0/12
+  acl localnet src 192.168.0.0/16
+  <BLANKLINE>
+  acl Connect_Safe_ports port 443
+  acl Connect_Safe_ports port 563
+  acl Connect_Safe_ports port 873
+  <BLANKLINE>
+  acl Safe_ports port 80
+  acl Safe_ports port 21
+  acl Safe_ports port 443
+  acl Safe_ports port 70
+  acl Safe_ports port 210
+  acl Safe_ports port 1025-65535
+  acl Safe_ports port 280
+  acl Safe_ports port 488
+  acl Safe_ports port 591
+  acl Safe_ports port 777
+  acl Safe_ports port 631
+  acl Safe_ports port 873
+  acl Safe_ports port 901
+  <BLANKLINE>
+  acl purge method PURGE
+  acl CONNECT method CONNECT
+  <BLANKLINE>
+  # Only allow cachemgr access from localhost
+  http_access allow manager localhost
+  http_access deny manager
+  <BLANKLINE>
+  # Only allow purge requests from localhost
+  http_access allow purge localhost
+  http_access deny purge
+  <BLANKLINE>
+  # Deny requests to unknown ports
+  http_access deny !Safe_ports
+  <BLANKLINE>
+  # Deny CONNECT to other than SSL ports
+  http_access deny CONNECT !Connect_Safe_ports
+  <BLANKLINE>
+  # We strongly recommend the following be uncommented to protect innocent
+  # web applications running on the proxy server who think the only
+  # one who can access services on "localhost" is a local user
+  http_access deny to_localhost
+  <BLANKLINE>
+  # Example rule allowing access from your local networks.
+  # Adapt localnet in the ACL section to list your (internal) IP networks
+  # from where browsing should be allowed
+  http_access allow localnet
+  <BLANKLINE>
+  # And finally deny all other access to this proxy
+  http_access deny all
+  <BLANKLINE>
+  #Allow ICP queries from local networks only
+  icp_access allow localnet
+  icp_access deny all
+  <BLANKLINE>
+  hierarchy_stoplist cgi-bin ?
+  <BLANKLINE>
+  refresh_pattern ^ftp:  1440 20% 10080
+  refresh_pattern ^gopher: 1440 0% 1440
+  refresh_pattern -i (/cgi-bin/|\?) 0 0% 0
+  refresh_pattern (Release|Package(.gz)*)$ 0 20% 2880
+  refresh_pattern . 0 20% 4320
+  <BLANKLINE>
+  # Don't upgrade shoutcast responses to HTTP
+  acl shoutcast rep_header X-HTTP09-First-Line ^ICY.[0-9]
+  upgrade_http0.9 deny shoutcast
+  <BLANKLINE>
+  # Apache mod_gzip and mod_deflate known to be broken, so dont trust
+  acl apache rep_header Server ^Apache
+  broken_vary_encoding allow apache
+  <BLANKLINE>
+  # Squid only knows about standard HTTP requests - allow up to 20 additional methods here
+  extension_methods REPORT MERGE MKACTIVITY CHECKOUT
+  <BLANKLINE>
+
