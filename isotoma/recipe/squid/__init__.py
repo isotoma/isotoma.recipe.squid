@@ -128,7 +128,8 @@ class Squid(object):
 
         self.add_runner()
         self.create_config()
-        self.init_cache()
+        if not os.path.exists(self.options["cachedir"]):
+            self.init_cache()
         return self.options.created()
 
     def update(self):
@@ -170,9 +171,7 @@ class Squid(object):
         self.options.created(self.options["config"])
 
     def init_cache(self):
-        if not os.path.exists(self.options["cachedir"]):
-            os.makedirs(self.options["cachedir"])
-
+        os.makedirs(self.options["cachedir"])
         cmd = "%s -f %s -z" % (self.options["daemon"], self.options["cfgfile"])
         ret = subprocess.call(cmd.split())
         #FIXME: Nuff said
