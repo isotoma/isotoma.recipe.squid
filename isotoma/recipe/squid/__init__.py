@@ -112,6 +112,8 @@ class Squid(object):
         self.options.setdefault("user", "nobody")
         self.options.setdefault("group", "nobody")
 
+        self.options.setdefault("hosts-file", None)
+
         # Record a SHA1 of the template we use, so we can detect changes in subsequent runs
         self.options["__hashes_template"] = sha1(open(self.options["template"]).read()).hexdigest()
 
@@ -166,6 +168,7 @@ class Squid(object):
             "localnet": split(self.options["localnet"]),
             "refresh_patterns": split(self.options["refresh-patterns"]),
             "default_refresh": self.options["default-refresh"],
+            "hosts_file": self.options["hosts-file"],
             })
         open(config, "w").write(str(c))
         self.options.created(self.options["config"])
