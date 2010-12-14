@@ -112,7 +112,7 @@ class Squid(object):
         self.options.setdefault("user", "nobody")
         self.options.setdefault("group", "nobody")
 
-        self.options.setdefault("hosts-file", None)
+        self.options.setdefault("hosts-file", '')
 
         # Record a SHA1 of the template we use, so we can detect changes in subsequent runs
         self.options["__hashes_template"] = sha1(open(self.options["template"]).read()).hexdigest()
