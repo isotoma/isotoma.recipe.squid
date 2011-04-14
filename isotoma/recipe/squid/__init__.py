@@ -33,7 +33,8 @@ from isotoma.recipe import gocaptain
 def split(lst):
     new_lst = []
     for itm in lst.strip().split("\n"):
-        new_lst.append(itm)
+        if itm:
+            new_lst.append(itm)
     return new_lst
 
 class Squid(object):
