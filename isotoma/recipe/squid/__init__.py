@@ -114,6 +114,8 @@ class Squid(object):
 
         self.options.setdefault("hosts-file", '')
         self.options.setdefault("allowed-domains-file", '')
+        self.options.setdefault("extra-acl", '')
+        self.options.setdefault("extra-http-access", '')
 
         # Record a SHA1 of the template we use, so we can detect changes in subsequent runs
         self.options["__hashes_template"] = sha1(open(self.options["template"]).read()).hexdigest()
@@ -171,6 +173,8 @@ class Squid(object):
             "default_refresh": self.options["default-refresh"],
             "hosts_file": self.options["hosts-file"],
             "allowed_domains_file": self.options["allowed-domains-file"],
+            "extra_acl": split(self.options["extra-acl"]),
+            "extra_http_access": split(self.options["extra-http-access"]),
             })
         open(config, "w").write(str(c))
         self.options.created(self.options["config"])
