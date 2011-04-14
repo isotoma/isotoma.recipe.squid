@@ -5,6 +5,7 @@ version = '0.0.6'
 setup(
     name = 'isotoma.recipe.squid',
     version = version,
+    url = "http://github.com/isotoma/isotoma.recipe.squid",
     description = "Set up squid",
     long_description = open("README.rst").read() + "\n" + \
                        open("CHANGES.txt").read(),
