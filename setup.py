@@ -1,8 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.0.8'
-
-setup(
+version = '0.0.999999999(
     name = 'isotoma.recipe.squid',
     version = version,
     url = "http://github.com/isotoma/isotoma.recipe.squid",
