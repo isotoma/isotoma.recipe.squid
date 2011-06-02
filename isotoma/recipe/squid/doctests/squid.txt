@@ -61,8 +61,13 @@ The config was indeed created::
   acl Safe_ports port 873
   acl Safe_ports port 901
   <BLANKLINE>
+  <BLANKLINE>
   acl purge method PURGE
   acl CONNECT method CONNECT
+  <BLANKLINE>
+  <BLANKLINE>
+  <BLANKLINE>
+  http_access deny to_localhost
   <BLANKLINE>
   # Only allow cachemgr access from localhost
   http_access allow manager localhost
@@ -78,17 +83,9 @@ The config was indeed created::
   # Deny CONNECT to other than SSL ports
   http_access deny CONNECT !Connect_Safe_ports
   <BLANKLINE>
-  # We strongly recommend the following be uncommented to protect innocent
-  # web applications running on the proxy server who think the only
-  # one who can access services on "localhost" is a local user
-  http_access deny to_localhost
   <BLANKLINE>
-  # Example rule allowing access from your local networks.
-  # Adapt localnet in the ACL section to list your (internal) IP networks
-  # from where browsing should be allowed
+  # If not on our localnet, deny
   http_access allow localnet
-  <BLANKLINE>
-  # And finally deny all other access to this proxy
   http_access deny all
   <BLANKLINE>
   #Allow ICP queries from local networks only
@@ -114,4 +111,3 @@ The config was indeed created::
   # Squid only knows about standard HTTP requests - allow up to 20 additional methods here
   extension_methods REPORT MERGE MKACTIVITY CHECKOUT
   <BLANKLINE>
-
